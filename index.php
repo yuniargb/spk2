@@ -12,8 +12,7 @@
     <meta name="description" content="Sistem Pendukung Keputusan(SPK) Metode Simple Additive Weighting (SAW). Studi kasus: TUBAGUS AGLONEMA."/>
     <link rel="icon" href="assets/images/favicon.png"/>
 
-    <title>SISTEM PENDUKUNG KEPUTUSAN PEMILIHAN PAKET UMROH UNTUK CALON JAMAAH DENGAN METODE ANALYTICAL HIERARCHY PROCESS (AHP) DAN SIMPLE ADDITIVE WEIGHTING (SAW) PADA (Study Kasus : PT AMANAH UMROH HANDAL)
-</title>
+    <title>SISTEM PENDUKUNG KEPUTUSAN PEMILIHAN SUPPLIER PADA KONVEKSI BUSANA DENGAN METODE ANALYTICAL HIERARCHY PROCESS (AHP) DAN SIMPLE ADDITIVE WEIGHTING (SAW)</title>
     <link href="assets/css/flatly-bootstrap.min.css" rel="stylesheet"/>
     <link href="assets/css/general.css" rel="stylesheet"/>
     <script src="assets/js/jquery.min.js"></script>
@@ -67,7 +66,7 @@
     </div>
     <footer class="footer bg-primary">
       <div class="container">
-        <p>  Copyright &copy; 2021 - Sistem Pendukung Keputusan Paket Umroh AHP-SAW</p>
+        <p>  Copyright &copy; <?=date('Y')?> - SISTEM PENDUKUNG KEPUTUSAN PEMILIHAN SUPPLIER PADA KONVEKSI BUSANA DENGAN METODE ANALYTICAL HIERARCHY PROCESS (AHP) DAN SIMPLE ADDITIVE WEIGHTING (SAW)</p>
       </div>
     </footer>
 </html>
