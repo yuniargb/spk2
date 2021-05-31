@@ -28,7 +28,7 @@ echo"</tr>";
 
 echo"<tr><th>Bobot</th>";  
 foreach($KRITERIA as $key => $value){
-    echo "<td class='text-primary'>".$value['bobot']."</td>";
+    echo "<td class='text-primary'>".round($value['bobot'], 3)."</td>";
 } 
 echo "<th></th><th></th></tr>";
 $total = hitung($normal);        
