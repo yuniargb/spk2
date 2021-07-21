@@ -35,21 +35,38 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             <li class="dropdown">
-                <a href="?m=kriteria" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-th-large"></span> Kriteria <span class="caret"></span></a>
+                <a href="?m=kriteria" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-th-large"></span> Master <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="?m=kriteria"><span class="glyphicon glyphicon-th-large"></span> Kriteria</a></li>
-                    <li><a href="?m=crips"><span class="glyphicon glyphicon-star"></span> Nilai Kriteria</a></li>
+                    <li><a href="?m=alternatif"><span class="glyphicon glyphicon-th-large"></span> Alternatif</a></li>
+                    <!-- <li><a href="?m=crips"><span class="glyphicon glyphicon-star"></span> Nilai Kriteria</a></li> -->
                 </ul>
             </li>
-            <li><a href="?m=rel_kriteria"><span class="glyphicon glyphicon-th"></span> Nilai Perbandingan Kriteria AHP</a></li>
             <li class="dropdown">
+                <a href="?m=kriteria" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-th-large"></span> Proses <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="?m=rel_kriteria"><span class="glyphicon glyphicon-th-large"></span> Nilai Perbandingan Kriteria AHP</a></li>
+                    <li><a href="?m=rel_alternatif"><span class="glyphicon glyphicon-th-large"></span> Nilai Alternatif</a></li>
+                    <li><a href="cetak.php?m=hitung" target="_blank"><span class="glyphicon glyphicon-star"></span> Cetak Hasil SAW</a></li>
+                </ul>
+            </li>
+            <li class="dropdown">
+                <a href="?m=kriteria" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-th-large"></span> Laporan <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                    <li><a href="?m=lap_penilaian_supp_period"><span class="glyphicon glyphicon-th-large"></span> Cetak Laporan Hasil Penilaian Supplier</a></li>
+                    <li><a href="?m=lap_perangkingan_supp_period"><span class="glyphicon glyphicon-th-large"></span> Cetak Laporan Hasil Perangkingan Supplier</a></li>
+                    <li><a href="?m=lap_hasil_keputusan_period"><span class="glyphicon glyphicon-th-large"></span> Cetak Laporan Hasil Keputusan</a></li>
+                </ul>
+            </li>
+            <!-- <li><a href="?m=rel_kriteria"><span class="glyphicon glyphicon-th"></span> Nilai Perbandingan Kriteria AHP</a></li> -->
+            <!-- <li class="dropdown">
                 <a href="?m=alternatif" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Alternatif <span class="caret"></span></a>
                 <ul class="dropdown-menu" role="menu">
-                    <li><a href="?m=alternatif"><span class="glyphicon glyphicon-user"></span> Alternatif</a></li>
+                    
                     <li><a href="?m=rel_alternatif"><span class="glyphicon glyphicon-user"></span> Nilai Alternatif</a></li>
                 </ul>
-            </li>
-            <li><a href="?m=hitung"><span class="glyphicon glyphicon-calendar"></span> Perhitungan</a></li>                
+            </li> -->
+            <!-- <li><a href="?m=hitung"><span class="glyphicon glyphicon-calendar"></span> Perhitungan</a></li>                 -->
             <li><a href="?m=password"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
             <li><a href="aksi.php?act=logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>      
           </ul>          

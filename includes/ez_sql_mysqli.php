@@ -46,7 +46,7 @@
 		*  same time as initialising the ezSQL_mysqli class
 		*/
 
-		function ezSQL_mysqli($dbuser='', $dbpassword='', $dbname='', $dbhost='localhost', $encoding='')
+		function ezSQL_mysqli($dbuser='root', $dbpassword='', $dbname='', $dbhost='localhost', $encoding='')
 		{
 			$this->dbuser = $dbuser;
 			$this->dbpassword = $dbpassword;
@@ -73,7 +73,7 @@
 		*  Try to connect to mySQL database server
 		*/
 
-		function connect($dbuser='', $dbpassword='', $dbhost='localhost', $dbport=false)
+		function connect($dbuser='root', $dbpassword='', $dbhost='localhost', $dbport=false)
 		{
 			global $ezsql_mysqli_str; $return_val = false;
 			

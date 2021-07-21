@@ -17,8 +17,12 @@
     <input class="form-control" type="text" name="nama" value="<?=$row->nama_alternatif?>"/>
 </div>
 <div class="form-group">
-    <label>Keterangan</label>
-    <textarea class="form-control" name="keterangan"><?=$row->keterangan?></textarea>
+    <label>No Telepon <span class="text-danger">*</span></label>
+    <input class="form-control" type="text" name="no_telp" value="<?=$row->telp?>"/>
+</div>
+<div class="form-group">
+    <label>Alamat <span class="text-danger">*</span></label>
+    <textarea class="form-control" name="alamat"><?=$row->alamat?></textarea>
 </div>
 <button class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Simpan</button>
 <a class="btn btn-danger" href="?m=alternatif"><span class="glyphicon glyphicon-arrow-left"></span> Kembali</a>

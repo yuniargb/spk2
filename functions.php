@@ -6,12 +6,24 @@ foreach($rows as $row){
     $ALTERNATIF[$row->kode_alternatif] = $row->nama_alternatif;
 }
 
+
 $rows = $db->get_results("SELECT kode_kriteria, nama_kriteria, atribut, bobot FROM tb_kriteria ORDER BY kode_kriteria");
 foreach($rows as $row){
     $KRITERIA[$row->kode_kriteria] = array(
         'nama_kriteria'=>$row->nama_kriteria,
         'atribut'=>$row->atribut,
-        'bobot'=>$row->bobot
+        'bobot'=>$row->bobot,
+        'kode_kriteria'=>$row->kode_kriteria
+    );
+}
+$rows= $db->get_results("SELECT tk.kode_kriteria, tk.nama_kriteria, tk.atribut, tk.bobot FROM tb_kriteria tk INNER JOIN tb_rel_kriteria trk ON tk.kode_kriteria = trk.kode_kriteria WHERE trk.status=1 GROUP BY kode_kriteria ORDER BY kode_kriteria");
+
+foreach($rows as $row){
+    $KRITERIA_RES[$row->kode_kriteria] = array(
+        'nama_kriteria'=>$row->nama_kriteria,
+        'atribut'=>$row->atribut,
+        'bobot'=>$row->bobot,
+        'kode_kriteria'=>$row->kode_kriteria
     );
 }
 
@@ -46,6 +58,16 @@ function get_rel_kriteria(){
     }
     return $arr;
 }
+function get_rel_kriteria_res(){
+    global $db;
+    $rows = $db->get_results("SELECT kode_rel_kriteria, kode_kriteria, nilai FROM tb_rel_kriteria WHERE status = 1 ORDER BY kode_rel_kriteria, kode_kriteria ");
+    $arr = array();
+    foreach($rows as $row){
+        $arr[$row->kode_rel_kriteria][$row->kode_kriteria] = $row->nilai;
+    }
+    return $arr;
+}
+
 
 function AHP_get_nilai_option($selected = ''){
     $nilai = array(
@@ -77,20 +99,58 @@ function get_kolom_total($matriks = array()){
     return $total;
 }
 function AHP_normalize($matriks = array(), $total = array()){
-          
+    $matrikss = array_values($matriks);
+    // var_dump($matriks);
     foreach($matriks as $key => $value){
         foreach($value as $k => $v){
-            $matriks[$key][$k] = $matriks[$key][$k]/$total[$k];
+            
+            $bawah = array();
+            foreach($matrikss as $key2 => $value2){
+               
+                array_push( $bawah, $matrikss[$key2][$k]);
+            }
+            $value = array_values($value);
+            $totals = baris_normalize($bawah,$value);
+
+            $matriks[$key][$k] = $totals;
         }
-    }     
+    }    
     return $matriks;       
+}
+
+
+function AHP_get_ci($matriks = array(),$prioritas = array()){
+    $data = array();
+    $matriks = array_values($matriks);
+    $prioritas = array_values($prioritas);
+    // var_dump($matriks);
+    foreach($matriks as $key => $value){
+
+        $data[$key] = $matriks[$key] * $prioritas[$key];
+        
+    }    
+    $ci = (array_sum($data) - count($matriks) ) / (count($matriks) - 1);
+
+    return $ci ;       
+}
+
+function baris_normalize($bawah,$samping){
+    $total = 0;
+    $str = '';
+    foreach($samping as $key => $value2){
+        $total += $bawah[$key] * $samping[$key]; 
+        
+    }
+   return $total;
 }
 
 function AHP_get_rata($normal){
     $rata = array();
     foreach($normal as $key => $value){
-        $rata[$key] = array_sum($value)/count($value); 
+        if(count($value) == 1)
+            $rata[$key] = $value / intval(array_sum($normal)); 
     } 
+    // var_dump($rata);
     return $rata;   
 }
 
@@ -110,15 +170,57 @@ function AHP_mmult($matriks = array(), $rata = array()){
     foreach($matriks as $key => $value){
         $no=0;
         foreach($value as $k => $v){
+            // var_dump($k);
             $data[$key]+=$v*$rata[$no];       
             $no++;  
         }               
     }  
+    return $data;
+}
+function AHP_rata_rata($matriks = array(), $rata = array()){
+    $data = array();
     
+    // $rata = array_values($rata);
+    
+    foreach($matriks as $key => $value){
+        $no=0;
+        foreach($value as $k => $v){
+            // var_dump($k);
+            $data[$key]+=$v*$rata[$k];       
+            $no++;  
+        }               
+    }  
+    return $data;
+}
+
+function AHP_get_hasil($matriks, $rata){
+    // $matriks = AHP_mmult($matriks, $rata);  
+    foreach($matriks as $key => $value){
+        $data[$key]=$value+$rata[$key];   
+    }
+    // var_dump($data);  
+    return $data;
+}
+function AHP_get_jumlah($matriks){ 
+    foreach($matriks as $key => $value){
+        $data[$key]=array_sum($value);   
+    } 
     return $data;
 }
 // ==============================//
 
+function get_alternatif_option($selected = 0){
+    global $ALTERNATIF;  
+    foreach($ALTERNATIF as $key => $value){
+        print_r($value);
+        if($key==$selected)
+            $a.="<option value='$key' selected>".$value."</option>";
+        else
+            $a.="<option value='$key'>".$value."</option>";
+    }
+    
+    return $a;
+}
 
 $SAW_crips = SAW_get_crips();
 
@@ -143,20 +245,87 @@ function SAW_get_crips(){
     return $data;
 }
 
-function SAW_get_rel(){
+function SAW_get_rel($periode = null){
     global $db;
-    $rows = $db->get_results("SELECT a.kode_alternatif, k.kode_kriteria, c.kode_nilai_kriteria
-        FROM tb_alternatif a 
-        	INNER JOIN tb_rel_alternatif ra ON ra.kode_alternatif=a.kode_alternatif
-        	INNER JOIN tb_kriteria k ON k.kode_kriteria=ra.kode_kriteria
-        	LEFT JOIN tb_nilai_kriteria c ON c.kode_nilai_kriteria=ra.kode_nilai_kriteria
-        ORDER BY a.kode_alternatif, k.kode_kriteria");
+    $q = "SELECT a.kode_alternatif, k.kode_kriteria, ra.nilai_alternatif
+    FROM tb_alternatif a 
+        INNER JOIN tb_rel_alternatif ra ON ra.kode_alternatif=a.kode_alternatif
+        INNER JOIN tb_kriteria k ON k.kode_kriteria=ra.kode_kriteria
+    WHERE ra.status = 1";
+
+    if($periode != null){
+        $q .= " AND ra.periode = '$periode'";
+    }
+
+    $q .= " ORDER BY a.kode_alternatif, k.kode_kriteria";
+
+    $rows = $db->get_results($q);
     $data = array();
     foreach($rows as $row){
         $data[$row->kode_alternatif][$row->kode_kriteria] = $row->kode_nilai_kriteria;
     }
     return $data;
 }
+
+function get_alternatif_saw($key,$k){
+    var_dump($key);
+    var_dump($k);
+    $rows = $db->get_row("SELECT
+        	a.kode_alternatif, a.nama_alternatif,
+            ra.nilai_alternatif
+            FROM tb_rel_alternatif ra 
+                INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+            WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
+    return $rows->nilai_alternatif;
+}
+
+function SAW_nomalize($array, $max = true){
+    global $db,$KRITERIA;
+    $crips = SAW_get_crips();
+    $data = array();
+    $mm = array();
+            
+    foreach($array as $key => $value){
+        $temp = array();        
+        foreach($value as $k => $v){
+            $mm[$k][] = $crips[$v]->nilai;
+        }
+    }
+    foreach($array as $key => $value){                
+        foreach($value as $k => $v){
+            $rows = $db->get_row("SELECT
+        	a.kode_alternatif, a.nama_alternatif,
+            ra.nilai_alternatif
+            FROM tb_rel_alternatif ra 
+                INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+            WHERE ra.status = 1 AND ra.kode_alternatif = '".$key."' AND ra.kode_kriteria = '".$k."'");
+
+
+            if($KRITERIA[$k]['atribut']=='benefit'){
+
+                $max = $db->get_row("SELECT
+                max(ra.nilai_alternatif) AS maxx
+                FROM tb_rel_alternatif ra 
+                    INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+                WHERE ra.status = 1 AND ra.kode_kriteria = '$k'");
+
+                $data[$key][$k] = $rows->nilai_alternatif / $max->maxx;
+            }else{
+
+                $min = $db->get_row("SELECT
+                min(ra.nilai_alternatif) AS minn
+                FROM tb_rel_alternatif ra 
+                    INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+                WHERE ra.status = 1 AND ra.kode_kriteria = '$k'");
+
+
+                $data[$key][$k] = $min->minn / $rows->nilai_alternatif;
+            }
+        }
+    }
+    return $data;
+}
+
 
 function SAW_step1($echo=true){
     global $db, $ALTERNATIF, $KRITERIA, $SAW_crips;
@@ -176,10 +345,19 @@ function SAW_step1($echo=true){
     
     $no=1;	
     foreach($data as $key => $value){
+      
         $r.= "<tr>";
         $r.= "<th>". $key ." - " .$ALTERNATIF[$key]."</th>";
         foreach($value as $k => $v){
-            $r.= "<td>".$SAW_crips[$v]->keterangan."</td>";
+            $rows = $db->get_row("SELECT
+        	a.kode_alternatif, a.nama_alternatif,
+            ra.nilai_alternatif
+            FROM tb_rel_alternatif ra 
+                INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+            WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
+
+            
+            $r.= "<td>".$rows->nilai_alternatif."</td>";
         }        
         $r.= "</tr>";
         $no++;    
@@ -187,6 +365,8 @@ function SAW_step1($echo=true){
     $r.= "</tr>";
     return $r;
 }
+
+
 
 function SAW_step2($echo=true){
     global $db, $ALTERNATIF, $KRITERIA, $SAW_crips;
@@ -217,41 +397,59 @@ function SAW_step2($echo=true){
     return $r;
 }
 
-function SAW_nomalize($array, $max = true){
-    global $KRITERIA;
-    $crips = SAW_get_crips();
-    $data = array();
-    $mm = array();
-            
-    foreach($array as $key => $value){
-        $temp = array();        
-        foreach($value as $k => $v){
-            $mm[$k][] = $crips[$v]->nilai;
-        }
-    }
-    
-    foreach($array as $key => $value){                
-        foreach($value as $k => $v){
-            if($KRITERIA[$k]['atribut']=='benefit')
-                $data[$key][$k] = $crips[$v]->nilai / max($mm[$k]);
-            else
-                $data[$key][$k] = min($mm[$k]) / $crips[$v]->nilai;
-        }
-    }
-    return $data;
-}
 
+
+// function SAW_max($array){
+//     foreach($array as $key => $value){                
+//         foreach($value as $k => $v){
+
+//             $rows = $db->get_row("SELECT
+//             max(ra.nilai_alternatif) AS maxx
+//             FROM tb_rel_alternatif ra 
+//                 INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+//             WHERE ra.status = 1 AND ra.kode_kriteria = '$k'");
+            
+//         }
+//     }
+
+//     foreach($value as $k => $v){
+//         $rows = $db->get_row("SELECT
+//         a.kode_alternatif, a.nama_alternatif,
+//         ra.nilai_alternatif
+//         FROM tb_rel_alternatif ra 
+//             INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+//         WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
+        
+//         $r.= "<td>".$rows->nilai_alternatif."</td>";
+//     }        
+// }
+// function SAW_min($array){
+
+// }
 function get_kriteria_option($selected = 0){
     global $KRITERIA;  
     print_r($KRITERIA);
     foreach($KRITERIA as $key => $value){
         if($key==$selected)
-            $a.="<option value='$key' selected>$value[nama_kriteria]</option>";
+            $a.="<option value='$key' selected>$value[kode_kriteria] - $value[nama_kriteria]</option>";
         else
-            $a.="<option value='$key'>$value[nama_kriteria]</option>";
+            $a.="<option value='$key'>$value[kode_kriteria] - $value[nama_kriteria]</option>";
     }
+    
     return $a;
 }
+function get_kriteria_res_option($selected = 0){
+    global $KRITERIA_RES; 
+    foreach($KRITERIA_RES as $key => $value){
+        if($key==$selected)
+            $a.="<option value='$key' selected>$value[kode_kriteria] - $value[nama_kriteria]</option>";
+        else
+            $a.="<option value='$key'>$value[kode_kriteria] - $value[nama_kriteria]</option>";
+    }
+    
+    return $a;
+}
+
 
 function get_bobot_option($selected = ''){
     global $NILAI;    

@@ -5,9 +5,19 @@
 <div class="col-sm-6">
 <?php if($_POST) include'aksi.php'?>
 <form method="post" action="?m=kriteria_tambah">
+<?php
+$row = $db->get_row("SELECT MAX(kode_kriteria) as kda FROM tb_kriteria");
+$getNum = substr($row->kda,1) + 1;
+if($getNum < 10){
+    $newID = 'C0'.$getNum;
+}else{
+    $newID = 'C'.$getNum;
+}
+
+?>
 <div class="form-group">
     <label>Kode <span class="text-danger">*</span></label>
-    <input class="form-control" type="text" name="kode" value="<?=$_POST[kode]?>"/>
+    <input class="form-control" type="text" name="kode" value="<?=$newID?>" readonly/>
 </div>
 <div class="form-group">
     <label>Nama Kriteria <span class="text-danger">*</span></label>

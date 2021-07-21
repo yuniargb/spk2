@@ -37,13 +37,14 @@ if($act=='login'){
 elseif($mod=='alternatif_tambah'){
     $kode = $_POST['kode'];
     $nama = $_POST['nama'];
-    $keterangan = $_POST['keterangan'];
-    if($kode=='' || $nama=='')
+    $no_telp = $_POST['no_telp'];
+    $alamat = $_POST['alamat'];
+    if($kode=='' || $nama=='' || $no_telp=='' || $alamat=='')
         print_msg("Field bertanda * tidak boleh kosong!");
     elseif($db->get_results("SELECT * FROM tb_alternatif WHERE kode_alternatif='$kode'"))
         print_msg("Kode sudah ada!");
     else{
-        $db->query("INSERT INTO tb_alternatif (kode_alternatif, nama_alternatif, keterangan) VALUES ('$kode', '$nama', '$keterangan')");
+        $db->query("INSERT INTO tb_alternatif (kode_alternatif, nama_alternatif,telp, alamat) VALUES ('$kode', '$nama','$no_telp', '$alamat')");
         
         $db->query("INSERT INTO tb_rel_alternatif(kode_alternatif, kode_kriteria, kode_nilai_kriteria) SELECT '$kode', kode_kriteria, 0 FROM tb_kriteria");       
         redirect_js("index.php?m=alternatif");
@@ -51,11 +52,12 @@ elseif($mod=='alternatif_tambah'){
 } else if($mod=='alternatif_ubah'){
     $kode = $_POST['kode'];
     $nama = $_POST['nama'];
-    $keterangan = $_POST['keterangan'];
-    if($kode=='' || $nama=='')
+    $no_telp = $_POST['no_telp'];
+    $alamat = $_POST['alamat'];
+    if($kode=='' || $nama=='' || $no_telp=='' || $alamat=='')
         print_msg("Field bertanda * tidak boleh kosong!");
     else{
-        $db->query("UPDATE tb_alternatif SET nama_alternatif='$nama', keterangan='$keterangan' WHERE kode_alternatif='$_GET[ID]'");
+        $db->query("UPDATE tb_alternatif SET nama_alternatif='$nama', telp='$no_telp', alamat='$alamat' WHERE kode_alternatif='$_GET[ID]'");
         redirect_js("index.php?m=alternatif");
     }
 } else if ($act=='alternatif_hapus'){
@@ -103,19 +105,49 @@ if($mod=='kriteria_tambah'){
     $db->query("DELETE FROM tb_rel_kriteria WHERE kode_kriteria='$_GET[ID]'");
     header("location:index.php?m=kriteria");
 } elseif($mod=='rel_kriteria'){
-    $ID1 = $_POST['ID1'];
-    $ID2 = $_POST['ID2'];
-    $nilai = abs($_POST['nilai']);
-    
-    if($ID1==$ID2 && $nilai<>1){
-        print_msg('Kriteria sama harus bernilai 1!');
-    } else {        
-        $db->query("UPDATE tb_rel_kriteria SET nilai=$nilai
-            WHERE kode_rel_kriteria='$ID1' AND kode_kriteria='$ID2'");               
-        $db->query("UPDATE tb_rel_kriteria SET nilai=1/$nilai
-            WHERE kode_rel_kriteria='$ID2' AND kode_kriteria='$ID1'");
+    if($_POST['edit']){
+        $ID1 = $_POST['ID1'];
+        $ID2 = $_POST['ID2'];
+        $nilai = abs($_POST['nilai']);
+        
+        if($ID1==$ID2 && $nilai<>1){
+            print_msg('Kriteria sama harus bernilai 1!');
+        } else {        
+            $db->query("UPDATE tb_rel_kriteria SET nilai=$nilai,status=1
+                WHERE kode_rel_kriteria='$ID1' AND kode_kriteria='$ID2'");               
+            $db->query("UPDATE tb_rel_kriteria SET nilai=1/$nilai,status=1
+                WHERE kode_rel_kriteria='$ID2' AND kode_kriteria='$ID1'");
+            print_msg('Data tersimpan!', 'success');
+        }
+    }else if($_POST['delete']){
+        $kriteria = $_POST['ID'];
+
+        $db->query("UPDATE tb_rel_kriteria SET status=0
+        WHERE kode_rel_kriteria='$kriteria' AND kode_kriteria='$kriteria'"); 
+        
+
+        $rows= $db->get_results("SELECT kode_kriteria FROM  tb_rel_kriteria  WHERE status= 1");
+
+        foreach($rows as $row){
+            $db->query("UPDATE tb_rel_kriteria SET status=0
+            WHERE (kode_rel_kriteria='$row->kode_kriteria' AND kode_kriteria='$kriteria') OR (kode_rel_kriteria='$kriteria' AND kode_kriteria='$row->kode_kriteria')"); 
+        }
+        print_msg('Data terhapus!', 'success');
+    }else{
+        $kriteria = $_POST['kriteria'];
+        $db->query("UPDATE tb_rel_kriteria SET status=1
+        WHERE kode_rel_kriteria='$kriteria' AND kode_kriteria='$kriteria'"); 
+        
+
+        $rows= $db->get_results("SELECT kode_kriteria FROM  tb_rel_kriteria  WHERE status= 1");
+
+        foreach($rows as $row){
+            $db->query("UPDATE tb_rel_kriteria SET status=1
+            WHERE (kode_rel_kriteria='$row->kode_kriteria' AND kode_kriteria='$kriteria') OR (kode_rel_kriteria='$kriteria' AND kode_kriteria='$row->kode_kriteria')"); 
+        }
         print_msg('Data tersimpan!', 'success');
     }
+    
 }
 
 /** CRIPS */    
@@ -149,12 +181,33 @@ else if ($act=='rel_alternatif_ubah'){
     // print_r($_POST);
     // exit();
     foreach($_POST as $key => $value){
-        $ID = str_replace('ID-', '', $key);
+
+        if($key != 'periode'){
+            $ID = str_replace('ID-', '', $key);
 
 
-        $db->query("UPDATE tb_rel_alternatif SET kode_nilai_kriteria='$value' WHERE kode_rel_alternatif='$ID'");
+            $db->query("UPDATE tb_rel_alternatif SET nilai_alternatif ='$value',periode='$_POST[periode]' WHERE kode_rel_alternatif='$ID'");
+        }
+       
     }
     header("location:index.php?m=rel_alternatif");
+}
+else if ($mod=='rel_alternatif'){
+    if($_POST['delete']){
+        $alternatif = $_POST['ID'];
+
+        $db->query("UPDATE tb_rel_alternatif SET status=0
+        WHERE  kode_alternatif='$alternatif'"); 
+
+        print_msg('Data terhapus!', 'success');
+    }else{
+        $alternatif = $_POST['alternatif'];
+        $db->query("UPDATE tb_rel_alternatif SET status=1
+        WHERE  kode_alternatif='$alternatif'"); 
+
+        print_msg('Data tersimpan!', 'success');
+    }
+    
 }
 
 /** RELASI KRITERIA */
@@ -166,8 +219,8 @@ else if ($act=='rel_kriteria_ubah'){
     if($ID1==$ID2 && $nilai<>1)
         print_error("Kriteria yang sama harus bernilai 1.");
         
-    $db->query("UPDATE tb_rel_kriteria SET nilai=$nilai WHERE kode_rel_kriteria='$ID1' AND kode_kriteria='$ID2'");
-    $db->query("UPDATE tb_rel_kriteria SET nilai=1/$nilai WHERE kode_kriteria='$ID1' AND kode_rel_kriteria='$ID2'");
+    $db->query("UPDATE tb_rel_kriteria SET nilai=$nilai,status=1 WHERE kode_rel_kriteria='$ID1' AND kode_kriteria='$ID2'");
+    $db->query("UPDATE tb_rel_kriteria SET nilai=1/$nilai,status=1 WHERE kode_kriteria='$ID1' AND kode_rel_kriteria='$ID2'");
     header("location:index.php?m=rel_kriteria");
 }
 

@@ -4,7 +4,7 @@
     $config["server"]='localhost';
     $config["username"]='root';
     $config["password"]='';
-    $config["database_name"]='saw_ahp';
+    $config["database_name"]='db_spk';
     
     include'includes/ez_sql_core.php';
     include'includes/ez_sql_mysqli.php';

@@ -25,7 +25,8 @@
         <th>No</th>
         <th>Kode</th>
         <th>Nama Alternatif</th>
-        <th>Keterangan</th>
+        <th>Nomor Telepon</th>
+        <th>Alamat</th>
         <th>Aksi</th>
     </tr>
 </thead>
@@ -35,7 +36,8 @@ $rows = $db->get_results("SELECT * FROM tb_alternatif
     WHERE 
         kode_alternatif LIKE '%$q%'
         OR nama_alternatif LIKE '%$q%'
-        OR keterangan LIKE '%$q%'  
+        OR telp LIKE '%$q%'  
+        OR alamat LIKE '%$q%'  
     ORDER BY kode_alternatif");
 $no=0;
 foreach($rows as $row):?>
@@ -43,7 +45,8 @@ foreach($rows as $row):?>
     <td><?=++$no ?></td>
     <td><?=$row->kode_alternatif?></td>
     <td><?=$row->nama_alternatif?></td>
-    <td><?=$row->keterangan?></td>
+    <td><?=$row->telp?></td>
+    <td><?=$row->alamat?></td>
     <td>
         <a class="btn btn-xs btn-warning" href="?m=alternatif_ubah&ID=<?=$row->kode_alternatif?>"><span class="glyphicon glyphicon-edit"></span></a>
         <a class="btn btn-xs btn-danger" href="aksi.php?act=alternatif_hapus&ID=<?=$row->kode_alternatif?>" onclick="return confirm('Hapus data?')"><span class="glyphicon glyphicon-trash"></span></a>
