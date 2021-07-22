@@ -8,7 +8,7 @@ if($act=='login'){
     $row = $db->get_row("SELECT * FROM tb_admin WHERE user='$user' AND pass='$pass'");
     if($row){
         $_SESSION[login] = $row->user;
-        redirect_js("index.php?m=rel_alternatif");
+        redirect_js("index.php?m=kriteria");
     } else{
         print_msg("Salah kombinasi username dan password.");
     } 
