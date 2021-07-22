@@ -47,8 +47,8 @@ hr{
 <div class="wrapper">
     <table width="100%">
         <tr>
-            <td width="25%" align="center">
-                <img width="100" src="assets/images/logo.png"/>
+            <td width="25%" align="right">
+                <img width="100" src="assets/images/logo_ic.png"/>
             </td>
             <td align="center" class="title">
                 <h4 class="text-red">IYON COLLECTION</h4>
