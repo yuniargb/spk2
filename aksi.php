@@ -46,7 +46,7 @@ elseif($mod=='alternatif_tambah'){
     else{
         $db->query("INSERT INTO tb_alternatif (kode_alternatif, nama_alternatif,telp, alamat) VALUES ('$kode', '$nama','$no_telp', '$alamat')");
         
-        $db->query("INSERT INTO tb_rel_alternatif(kode_alternatif, kode_kriteria, kode_nilai_kriteria) SELECT '$kode', kode_kriteria, 0 FROM tb_kriteria");       
+        $db->query("INSERT INTO tb_rel_alternatif(kode_alternatif, kode_kriteria) SELECT '$kode', kode_kriteria FROM tb_kriteria");       
         redirect_js("index.php?m=alternatif");
     }
 } else if($mod=='alternatif_ubah'){

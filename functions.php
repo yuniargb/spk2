@@ -18,6 +18,7 @@ foreach($rows as $row){
 }
 $rows= $db->get_results("SELECT tk.kode_kriteria, tk.nama_kriteria, tk.atribut, tk.bobot FROM tb_kriteria tk INNER JOIN tb_rel_kriteria trk ON tk.kode_kriteria = trk.kode_kriteria WHERE trk.status=1 GROUP BY kode_kriteria ORDER BY kode_kriteria");
 
+
 foreach($rows as $row){
     $KRITERIA_RES[$row->kode_kriteria] = array(
         'nama_kriteria'=>$row->nama_kriteria,
@@ -27,6 +28,11 @@ foreach($rows as $row){
     );
 }
 
+function get_alternatif($id){
+    global $db;
+    $rows = $db->get_row("SELECT * FROM tb_alternatif WHERE kode_alternatif ='$id'");
+    return $rows;
+}
 // ===========================
 // AHP
 $nRI = array (
@@ -147,8 +153,11 @@ function baris_normalize($bawah,$samping){
 function AHP_get_rata($normal){
     $rata = array();
     foreach($normal as $key => $value){
-        if(count($value) == 1)
-            $rata[$key] = $value / intval(array_sum($normal)); 
+        if(count($value) == 1) {
+            // echo  $value;
+            // echo  array_sum($normal);
+            $rata[$key] = $value /array_sum($normal); 
+        }
     } 
     // var_dump($rata);
     return $rata;   
@@ -368,27 +377,39 @@ function SAW_step1($echo=true){
 
 
 
-function SAW_step2($echo=true){
+function SAW_step2($echo=true,$periode = null){
     global $db, $ALTERNATIF, $KRITERIA, $SAW_crips;
     
-    $data = SAW_get_rel();
+    
+    $data = SAW_get_rel($periode);
     
     if(!$echo)
         return $data;
         
-    $r.= "<tr><th></th>";   	
+    $r.= "<tr><th>No</th><th>Nama Alternatif</th><th>Periode</th>";   	
     $no=1;	
     foreach($data[key($data)] as $key => $value){
-        $r.= "<th>". $key ." - ".$KRITERIA[$key]['nama_kriteria']."</th>";
+        $r.= "<th>". $KRITERIA[$key][nama_kriteria]."</th>";
         $no++;      
     }    
     
     $no=1;	
     foreach($data as $key => $value){
+      
         $r.= "<tr>";
-        $r.= "<th>". $key ." - ".$ALTERNATIF[$key]."</th>";
+        $r.= "<th>".$no."</th>";
+        $r.= "<th>".$ALTERNATIF[$key]."</th>";
+        $r.= "<th>".$periode."</th>";
         foreach($value as $k => $v){
-            $r.= "<td>".$SAW_crips[$v]->nilai."</td>";
+            $rows = $db->get_row("SELECT
+        	a.kode_alternatif, a.nama_alternatif,
+            ra.nilai_alternatif
+            FROM tb_rel_alternatif ra 
+                INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+            WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
+
+            
+            $r.= "<td>".$rows->nilai_alternatif."</td>";
         }        
         $r.= "</tr>";
         $no++;    

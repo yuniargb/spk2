@@ -1,8 +1,8 @@
-<div class="page-header">
+<!-- <div class="page-header">
     <h2>Laporan</h2>
-</div>        
+</div>         -->
                 <div class="panel panel-primary">
-                    <div class="panel-heading"><strong>Cetak Laporan Hasil Perangkingan Supplier</strong></div>
+                    <div class="panel-heading"><strong>Cetak Hasil Keputusan</strong></div>
                     <div class="panel-body oxa">
                     <table class="table table-bordered table-striped table-hover">
                     <?php       
@@ -14,7 +14,7 @@
                     echo "<th>Rangking</th>";
                     echo "<th>Nama Alternatif</th>";
                     echo "<th>Nilai</th>";
-                    echo "<th>Periode</th>";
+                    echo "<th>Cetak</th>";
                     echo"</tr>";
                     
                     $total = hitung($normal);        
@@ -25,16 +25,13 @@
                         echo"<td>$value</td>";
                         echo"<th>$ALTERNATIF[$key]</th>";
                         echo "<td class='text-primary'>".round($total[$key], 3)."</td>";
-                        echo"<td>$_POST[periode]</td>";
+                        echo "<td><a class='btn btn-warning btn-xs' target='_blank' href='cetak_laporan.php?m=penilaian_supp_detail&ID=$key&periode=". $_POST['periode']."'>cetak</a></td>";
                         $tot=0;
                         echo "</tr>";
                         $no++;    
                     }                            
                     ?>
-                    </table>              
-                        <div class="form-group">
-                            <a class="btn btn-default" target="_blank" href="cetak_laporan.php?m=perangkingan_supp&periode=<?= $_POST['periode'] ?>"><span class="glyphicon glyphicon-print"></span> Cetak Laporan</a>
-                        </div> 
+                    </table>  
                     </div>
                 </div>
                 <style>

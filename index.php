@@ -47,7 +47,7 @@
                 <ul class="dropdown-menu" role="menu">
                     <li><a href="?m=rel_kriteria"><span class="glyphicon glyphicon-th-large"></span> Nilai Perbandingan Kriteria AHP</a></li>
                     <li><a href="?m=rel_alternatif"><span class="glyphicon glyphicon-th-large"></span> Nilai Alternatif</a></li>
-                    <li><a href="cetak.php?m=hitung" target="_blank"><span class="glyphicon glyphicon-star"></span> Cetak Hasil SAW</a></li>
+                    <li><a href="?m=hasil_keputusan_periode"><span class="glyphicon glyphicon-star"></span> Cetak Hasil Keputusan</a></li>
                 </ul>
             </li>
             <li class="dropdown">

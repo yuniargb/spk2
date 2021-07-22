@@ -97,9 +97,7 @@
                     }                            
                     ?>
                     </table>              
-                        <div class="form-group">
-                            <a class="btn btn-default" target="_blank" href="cetak.php?m=hitung"><span class="glyphicon glyphicon-print"></span> Cetak</a>
-                        </div> 
+                        
                     </div>
                 </div>
                 <style>

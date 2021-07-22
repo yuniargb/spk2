@@ -58,8 +58,7 @@ if($_POST['pilih'] || $_POST['edit'] || $_POST['delete']) include'aksi.php';
             <tbody>
             <?php  
             $kolom_total = get_kolom_total($data); 
-            $normal = AHP_normalize($data, $kolom_total);  
-            $getJumlah = AHP_get_rata($normal);     
+            $normal = AHP_normalize($data, $kolom_total);       
             $a=1;
             foreach($data as $key => $val):?>
             <tr>

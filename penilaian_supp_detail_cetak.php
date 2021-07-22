@@ -26,16 +26,76 @@
 <p>Berdasarkan Keputusan penilaian supplier, maka supplier dengan data sebagai berikut :</p>
 
 <?php
+$normal = SAW_nomalize(SAW_get_rel($_GET['periode'])); 
+$total = hitung($normal);        
+$rank = get_rank($total);
+$no=1;
 foreach($rank as $key => $value){
-    if($key == $_['ID']){
+   
+    if($key == $_GET['ID']){
+        $row = get_alternatif($key);
         
-    }
-    echo "<tr>";
-    echo "<th>$ALTERNATIF[$key]</th>";
-    echo "<td class='text-primary'>".round($total[$key], 3)."</td>";
-    echo "<td>$_GET[periode]</td>";
-    echo "</tr>";
+        echo "<table>";
+        echo "<tr>";
+            echo "<th>";
+            echo "Kode Supplier";
+            echo "</th>";
+            echo "<th>";
+            echo ":";
+            echo "</th>";
+            echo "<td>";
+            echo $key;
+            echo "</td>";
+        echo "</tr>";
+        echo "<tr>";
+            echo "<th>";
+            echo "Nama Supplier";
+            echo "</th>";
+            echo "<th>";
+            echo ":";
+            echo "</th>";
+            echo "<td>";
+            echo $ALTERNATIF[$key];
+            echo "</td>";
+        echo "</tr>";
+        echo "<tr>";
+            echo "<th>";
+            echo "Alamat";
+            echo "</th>";
+            echo "<th>";
+            echo ":";
+            echo "</th>";
+            echo "<td>";
+            echo $row->alamat;
+            echo "</td>";
+        echo "</tr>";
+        echo "<tr>";
+            echo "<th>";
+            echo "Nomor Telepon";
+            echo "</th>";
+            echo "<th>";
+            echo ":";
+            echo "</th>";
+            echo "<td>";
+            echo $row->telp;
+            echo "</td>";
+        echo "</tr>";
+        echo "<tr>";
+            echo "<th>";
+            echo "Hasil";
+            echo "</th>";
+            echo "<th>";
+            echo ":";
+            echo "</th>";
+            echo "<td>";
+            echo round($total[$key], 3);
+            echo "</td>";
+        echo "</tr>";
+        echo "</table>";
+    }   
+   
     // $no++;    
 }     
 ?>
-            
+      
+<p>Menyatakan bahwa supplier tersebut terpilih sebebagi supplier terbaik</p>
