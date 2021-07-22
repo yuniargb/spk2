@@ -38,21 +38,27 @@ hr{
 .ttd-box{
     height: 50px;
 }
+.text-red{
+    color: red;
+}
 </style>
 </head>
 <body onload="window.print()">
 <div class="wrapper">
     <table width="100%">
         <tr>
-            <td width="30%" align="center">
+            <td width="25%" align="center">
                 <img width="100" src="assets/images/logo.png"/>
             </td>
             <td align="center" class="title">
-                <h4>IYON COLLECTION</h4>
+                <h4 class="text-red">IYON COLLECTION</h4>
                 <h4>MENJUAL RUPA-RUPA</h4>
                 <h4>PAKAIAN GAMIS DEWASA</h4>
                 <p>Lantai Dasar AKS No.27 - 28</p>
                 <p>Pasar Cipulir - Jakarta Selatan</p>
+            </td>
+            <td width="25%" align="center">
+                
             </td>
         </tr>
     </table>
