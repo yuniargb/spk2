@@ -44,7 +44,7 @@
 $rows = $db->get_results("SELECT
         	a.kode_alternatif, a.nama_alternatif,
             ra.nilai_alternatif
-        FROM tb_rel_alternatif ra 
+        FROM tb_nilai_alternatif ra 
         	INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
         WHERE ra.status = 1 AND nama_alternatif LIKE '%".esc_field($_GET[q])."%'
         ORDER BY kode_alternatif, ra.kode_kriteria;", ARRAY_A);

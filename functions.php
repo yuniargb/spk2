@@ -253,12 +253,22 @@ function SAW_get_crips(){
     }
     return $data;
 }
+function insert_hasil($key,$hasil,$periode){
+    global $db;
+    $rows = $db->get_row("SELECT * FROM tb_hasil WHERE periode = '$periode'");
+
+    if($rows){
+        $db->query("UPDATE tb_hasil SET hasil = $hasil,id_nilai_alternatif = '$key' WHERE periode = '$periode'");
+    }else{
+        $db->query("INSERT INTO tb_hasil (id_nilai_alternatif, periode, hasil) VALUES ('$key', '$periode', $hasil)"); 
+    }
+}
 
 function SAW_get_rel($periode = null){
     global $db;
     $q = "SELECT a.kode_alternatif, k.kode_kriteria, ra.nilai_alternatif
     FROM tb_alternatif a 
-        INNER JOIN tb_rel_alternatif ra ON ra.kode_alternatif=a.kode_alternatif
+        INNER JOIN tb_nilai_alternatif ra ON ra.kode_alternatif=a.kode_alternatif
         INNER JOIN tb_kriteria k ON k.kode_kriteria=ra.kode_kriteria
     WHERE ra.status = 1";
 
@@ -282,7 +292,7 @@ function get_alternatif_saw($key,$k){
     $rows = $db->get_row("SELECT
         	a.kode_alternatif, a.nama_alternatif,
             ra.nilai_alternatif
-            FROM tb_rel_alternatif ra 
+            FROM tb_nilai_alternatif ra 
                 INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
             WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
     return $rows->nilai_alternatif;
@@ -305,7 +315,7 @@ function SAW_nomalize($array, $max = true){
             $rows = $db->get_row("SELECT
         	a.kode_alternatif, a.nama_alternatif,
             ra.nilai_alternatif
-            FROM tb_rel_alternatif ra 
+            FROM tb_nilai_alternatif ra 
                 INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
             WHERE ra.status = 1 AND ra.kode_alternatif = '".$key."' AND ra.kode_kriteria = '".$k."'");
 
@@ -314,7 +324,7 @@ function SAW_nomalize($array, $max = true){
 
                 $max = $db->get_row("SELECT
                 max(ra.nilai_alternatif) AS maxx
-                FROM tb_rel_alternatif ra 
+                FROM tb_nilai_alternatif ra 
                     INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
                 WHERE ra.status = 1 AND ra.kode_kriteria = '$k'");
 
@@ -323,7 +333,7 @@ function SAW_nomalize($array, $max = true){
 
                 $min = $db->get_row("SELECT
                 min(ra.nilai_alternatif) AS minn
-                FROM tb_rel_alternatif ra 
+                FROM tb_nilai_alternatif ra 
                     INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
                 WHERE ra.status = 1 AND ra.kode_kriteria = '$k'");
 
@@ -361,7 +371,7 @@ function SAW_step1($echo=true){
             $rows = $db->get_row("SELECT
         	a.kode_alternatif, a.nama_alternatif,
             ra.nilai_alternatif
-            FROM tb_rel_alternatif ra 
+            FROM tb_nilai_alternatif ra 
                 INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
             WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
 
@@ -404,7 +414,7 @@ function SAW_step2($echo=true,$periode = null){
             $rows = $db->get_row("SELECT
         	a.kode_alternatif, a.nama_alternatif,
             ra.nilai_alternatif
-            FROM tb_rel_alternatif ra 
+            FROM tb_nilai_alternatif ra 
                 INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
             WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
 
@@ -426,7 +436,7 @@ function SAW_step2($echo=true,$periode = null){
 
 //             $rows = $db->get_row("SELECT
 //             max(ra.nilai_alternatif) AS maxx
-//             FROM tb_rel_alternatif ra 
+//             FROM tb_nilai_alternatif ra 
 //                 INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
 //             WHERE ra.status = 1 AND ra.kode_kriteria = '$k'");
             
@@ -437,7 +447,7 @@ function SAW_step2($echo=true,$periode = null){
 //         $rows = $db->get_row("SELECT
 //         a.kode_alternatif, a.nama_alternatif,
 //         ra.nilai_alternatif
-//         FROM tb_rel_alternatif ra 
+//         FROM tb_nilai_alternatif ra 
 //             INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
 //         WHERE ra.status = 1 AND ra.kode_alternatif = '$key' AND ra.kode_kriteria = '$k'");
         

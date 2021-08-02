@@ -31,10 +31,10 @@ $total = hitung($normal);
 $rank = get_rank($total);
 $no=1;
 foreach($rank as $key => $value){
-   
     if($key == $_GET['ID']){
         $row = get_alternatif($key);
-        
+
+        insert_hasil($key,round($total[$key], 3),$_GET['periode']);
         echo "<table>";
         echo "<tr>";
             echo "<th>";

@@ -46,7 +46,7 @@ elseif($mod=='alternatif_tambah'){
     else{
         $db->query("INSERT INTO tb_alternatif (kode_alternatif, nama_alternatif,telp, alamat) VALUES ('$kode', '$nama','$no_telp', '$alamat')");
         
-        $db->query("INSERT INTO tb_rel_alternatif(kode_alternatif, kode_kriteria) SELECT '$kode', kode_kriteria FROM tb_kriteria");       
+        $db->query("INSERT INTO tb_nilai_alternatif(kode_alternatif, kode_kriteria) SELECT '$kode', kode_kriteria FROM tb_kriteria");       
         redirect_js("index.php?m=alternatif");
     }
 } else if($mod=='alternatif_ubah'){
@@ -62,7 +62,7 @@ elseif($mod=='alternatif_tambah'){
     }
 } else if ($act=='alternatif_hapus'){
     $db->query("DELETE FROM tb_alternatif WHERE kode_alternatif='$_GET[ID]'");
-    $db->query("DELETE FROM tb_rel_alternatif WHERE kode_alternatif='$_GET[ID]'");
+    $db->query("DELETE FROM tb_nilai_alternatif WHERE kode_alternatif='$_GET[ID]'");
     header("location:index.php?m=alternatif");
 } 
 
@@ -78,7 +78,7 @@ if($mod=='kriteria_tambah'){
         print_msg("Kode sudah ada!");
     else{
         $db->query("INSERT INTO tb_kriteria (kode_kriteria, nama_kriteria, atribut) VALUES ('$kode', '$nama', '$atribut')");              
-        $db->query("INSERT INTO tb_rel_alternatif(kode_alternatif, kode_kriteria, kode_nilai_kriteria) SELECT kode_alternatif, '$kode', 0  FROM tb_alternatif");          
+        $db->query("INSERT INTO tb_nilai_alternatif(kode_alternatif, kode_kriteria, kode_nilai_kriteria) SELECT kode_alternatif, '$kode', 0  FROM tb_alternatif");          
         $db->query("INSERT INTO tb_rel_kriteria(kode_rel_kriteria, kode_kriteria, nilai) 
             SELECT '$kode', kode_kriteria, 1 FROM tb_kriteria");
         $db->query("INSERT INTO tb_rel_kriteria(kode_rel_kriteria, kode_kriteria, nilai) 
@@ -99,7 +99,7 @@ if($mod=='kriteria_tambah'){
     }    
 } else if ($act=='kriteria_hapus'){
     $db->query("DELETE FROM tb_kriteria WHERE kode_kriteria='$_GET[ID]'");
-    $db->query("DELETE FROM tb_rel_alternatif WHERE kode_kriteria='$_GET[ID]'");
+    $db->query("DELETE FROM tb_nilai_alternatif WHERE kode_kriteria='$_GET[ID]'");
     $db->query("DELETE FROM tb_nilai_kriteria WHERE kode_kriteria='$_GET[ID]'");
     $db->query("DELETE FROM tb_rel_kriteria WHERE kode_rel_kriteria='$_GET[ID]'");
     $db->query("DELETE FROM tb_rel_kriteria WHERE kode_kriteria='$_GET[ID]'");
@@ -186,7 +186,7 @@ else if ($act=='rel_alternatif_ubah'){
             $ID = str_replace('ID-', '', $key);
 
 
-            $db->query("UPDATE tb_rel_alternatif SET nilai_alternatif ='$value',periode='$_POST[periode]' WHERE kode_rel_alternatif='$ID'");
+            $db->query("UPDATE tb_nilai_alternatif SET nilai_alternatif ='$value',periode='$_POST[periode]' WHERE id_nilai_alternatif='$ID'");
         }
        
     }
@@ -196,13 +196,13 @@ else if ($mod=='rel_alternatif'){
     if($_POST['delete']){
         $alternatif = $_POST['ID'];
 
-        $db->query("UPDATE tb_rel_alternatif SET status=0
+        $db->query("UPDATE tb_nilai_alternatif SET status=0
         WHERE  kode_alternatif='$alternatif'"); 
 
         print_msg('Data terhapus!', 'success');
     }else{
         $alternatif = $_POST['alternatif'];
-        $db->query("UPDATE tb_rel_alternatif SET status=1
+        $db->query("UPDATE tb_nilai_alternatif SET status=1
         WHERE  kode_alternatif='$alternatif'"); 
 
         print_msg('Data tersimpan!', 'success');

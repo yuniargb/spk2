@@ -37,6 +37,17 @@ CREATE TABLE IF NOT EXISTS `tb_alternatif` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table db_spk.tb_hasil
+CREATE TABLE IF NOT EXISTS `tb_hasil` (
+  `id_hasil` int(11) NOT NULL AUTO_INCREMENT,
+  `id_nilai_alternatif` varchar(50) DEFAULT NULL,
+  `hasil` float DEFAULT NULL,
+  `periode` varchar(4) DEFAULT NULL,
+  KEY `Index 1` (`id_hasil`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table db_spk.tb_kriteria
 CREATE TABLE IF NOT EXISTS `tb_kriteria` (
   `kode_kriteria` varchar(16) NOT NULL,
@@ -48,6 +59,19 @@ CREATE TABLE IF NOT EXISTS `tb_kriteria` (
 
 -- Data exporting was unselected.
 
+-- Dumping structure for table db_spk.tb_nilai_alternatif
+CREATE TABLE IF NOT EXISTS `tb_nilai_alternatif` (
+  `id_nilai_alternatif` int(11) NOT NULL AUTO_INCREMENT,
+  `kode_alternatif` varchar(16) DEFAULT NULL,
+  `kode_kriteria` varchar(16) DEFAULT NULL,
+  `nilai_alternatif` int(11) DEFAULT NULL,
+  `periode` varchar(50) DEFAULT NULL,
+  `status` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id_nilai_alternatif`)
+) ENGINE=MyISAM AUTO_INCREMENT=139 DEFAULT CHARSET=latin1;
+
+-- Data exporting was unselected.
+
 -- Dumping structure for table db_spk.tb_nilai_kriteria
 CREATE TABLE IF NOT EXISTS `tb_nilai_kriteria` (
   `kode_nilai_kriteria` int(11) NOT NULL AUTO_INCREMENT,
@@ -55,20 +79,7 @@ CREATE TABLE IF NOT EXISTS `tb_nilai_kriteria` (
   `keterangan` varchar(256) DEFAULT NULL,
   `nilai` double DEFAULT NULL,
   PRIMARY KEY (`kode_nilai_kriteria`)
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=latin1;
-
--- Data exporting was unselected.
-
--- Dumping structure for table db_spk.tb_rel_alternatif
-CREATE TABLE IF NOT EXISTS `tb_rel_alternatif` (
-  `kode_rel_alternatif` int(11) NOT NULL AUTO_INCREMENT,
-  `kode_alternatif` varchar(16) DEFAULT NULL,
-  `kode_kriteria` varchar(16) DEFAULT NULL,
-  `nilai_alternatif` int(11) DEFAULT NULL,
-  `periode` varchar(50) DEFAULT NULL,
-  `status` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`kode_rel_alternatif`)
-) ENGINE=MyISAM AUTO_INCREMENT=54 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- Data exporting was unselected.
 
